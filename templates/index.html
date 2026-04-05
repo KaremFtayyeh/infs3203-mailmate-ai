@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Generate an AI Email Reply</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="{{ url_for('generate') }}" method="POST">
+        <label for="original_email">Paste the incoming email:</label>
+        <textarea id="original_email" name="original_email" rows="8" required>{{ original_email or '' }}</textarea>
+
+        <label for="tone">Tone:</label>
+        <select id="tone" name="tone">
+            <option value="formal" {% if tone == 'formal' %}selected{% endif %}>Formal</option>
+            <option value="friendly" {% if tone == 'friendly' %}selected{% endif %}>Friendly</option>
+            <option value="professional" {% if tone == 'professional' %}selected{% endif %}>Professional</option>
+        </select>
+
+        <label for="reply_length">Reply Length:</label>
+        <select id="reply_length" name="reply_length">
+            <option value="short" {% if reply_length == 'short' %}selected{% endif %}>Short</option>
+            <option value="medium" {% if reply_length == 'medium' %}selected{% endif %}>Medium</option>
+            <option value="detailed" {% if reply_length == 'detailed' %}selected{% endif %}>Detailed</option>
+        </select>
+
+        <button type="submit">Generate Reply</button>
+    </form>
+</section>
+
+{% if generated_reply %}
+<section class="card">
+    <h2>Generated Reply</h2>
+    <textarea rows="10" readonly>{{ generated_reply }}</textarea>
+
+    <form action="{{ url_for('save') }}" method="POST">
+        <input type="hidden" name="original_email" value="{{ original_email }}">
+        <input type="hidden" name="tone" value="{{ tone }}">
+        <input type="hidden" name="reply_length" value="{{ reply_length }}">
+        <input type="hidden" name="generated_reply" value="{{ generated_reply }}">
+        <button type="submit">Save Reply</button>
+    </form>
+
+    <form action="{{ url_for('improve') }}" method="POST">
+        <input type="hidden" name="original_email" value="{{ original_email }}">
+        <input type="hidden" name="tone" value="{{ tone }}">
+        <input type="hidden" name="reply_length" value="{{ reply_length }}">
+        <input type="hidden" name="generated_reply" value="{{ generated_reply }}">
+        <button type="submit">Improve Reply</button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

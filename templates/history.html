@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Saved Reply History</h2>
+
+    {% if replies %}
+        {% for reply in replies %}
+            <div class="history-item">
+                <p><strong>Date:</strong> {{ reply["created_at"] }}</p>
+                <p><strong>Tone:</strong> {{ reply["tone"] }}</p>
+                <p><strong>Length:</strong> {{ reply["reply_length"] }}</p>
+                <p><strong>Original Email:</strong></p>
+                <div class="box">{{ reply["original_email"] }}</div>
+                <p><strong>Generated Reply:</strong></p>
+                <div class="box">{{ reply["generated_reply"] }}</div>
+            </div>
+            <hr>
+        {% endfor %}
+    {% else %}
+        <p>No saved replies yet.</p>
+    {% endif %}
+</section>
+{% endblock %}
