@@ -11,6 +11,7 @@ def call_gemini(prompt):
     payload = {
         "contents": [
             {
+                "role": "user",
                 "parts": [
                     {"text": prompt}
                 ]
@@ -27,14 +28,24 @@ def call_gemini(prompt):
             response.raise_for_status()
             data = response.json()
             return data["candidates"][0]["content"]["parts"][0]["text"]
-        except requests.exceptions.HTTPError as e:
+
+        except requests.exceptions.HTTPError:
+            try:
+                print("Gemini API response body:")
+                print(response.text)
+            except Exception:
+                pass
+
             if response.status_code == 503 and attempt < max_retries - 1:
                 time.sleep(delay)
                 delay *= 2
                 continue
-            return f"AI service error: {e}"
+
+            return "AI service is currently unavailable or misconfigured. Please try again later."
+
         except requests.exceptions.RequestException as e:
-            return f"AI service error: {e}"
+            print("Gemini request failed:", str(e))
+            return "AI service is currently unavailable. Please try again later."
 
 
 def generate_email_reply(original_email, tone, reply_length):
