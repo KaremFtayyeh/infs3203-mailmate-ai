@@ -29,7 +29,7 @@ def call_gemini(prompt):
             data = response.json()
 
             print("Gemini success response:")
-            print(data)
+            print(data, flush=True)
 
             candidates = data.get("candidates", [])
             if not candidates:
@@ -49,7 +49,7 @@ def call_gemini(prompt):
         except requests.exceptions.HTTPError:
             try:
                 print("Gemini API error response:")
-                print(response.text)
+                print(response.text, flush=True)
             except Exception:
                 print("Could not read Gemini error response.")
 

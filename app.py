@@ -27,6 +27,8 @@ def generate():
             )
 
         generated_reply = generate_email_reply(original_email, tone, reply_length)
+        print("Generated reply returned to template:", flush=True)
+        print(generated_reply, flush=True)
 
         return render_template(
             "index.html",
@@ -66,6 +68,8 @@ def improve():
         generated_reply = request.form.get("generated_reply", "").strip()
 
         improved_reply = improve_email_reply(generated_reply)
+        print("Improved reply returned to template:", flush=True)
+        print(improved_reply, flush=True)
 
         return render_template(
             "index.html",
