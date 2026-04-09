@@ -27,14 +27,31 @@ def call_gemini(prompt):
             response = requests.post(url, json=payload, timeout=30)
             response.raise_for_status()
             data = response.json()
-            return data["candidates"][0]["content"]["parts"][0]["text"]
+
+            print("Gemini success response:")
+            print(data)
+
+            candidates = data.get("candidates", [])
+            if not candidates:
+                return "AI service returned no candidates."
+
+            content = candidates[0].get("content", {})
+            parts = content.get("parts", [])
+            if not parts:
+                return "AI service returned no text parts."
+
+            text = parts[0].get("text", "")
+            if not text:
+                return "AI service returned an empty reply."
+
+            return text
 
         except requests.exceptions.HTTPError:
             try:
-                print("Gemini API response body:")
+                print("Gemini API error response:")
                 print(response.text)
             except Exception:
-                pass
+                print("Could not read Gemini error response.")
 
             if response.status_code == 503 and attempt < max_retries - 1:
                 time.sleep(delay)
@@ -46,6 +63,10 @@ def call_gemini(prompt):
         except requests.exceptions.RequestException as e:
             print("Gemini request failed:", str(e))
             return "AI service is currently unavailable. Please try again later."
+
+        except Exception as e:
+            print("Unexpected Gemini parsing error:", str(e))
+            return "AI service returned an unexpected response. Please try again later."
 
 
 def generate_email_reply(original_email, tone, reply_length):
