@@ -12,6 +12,7 @@ def home():
     return render_template("index.html", generated_reply=None)
 
 
+
 @app.route("/generate", methods=["POST"])
 def generate():
     try:
@@ -43,6 +44,7 @@ def generate():
             error="Something went wrong while generating the reply."
         )
 
+
 @app.route("/save", methods=["POST"])
 def save():
     original_email = request.form.get("original_email", "").strip()
@@ -54,6 +56,7 @@ def save():
         save_reply(original_email, tone, reply_length, generated_reply)
 
     return redirect(url_for("history"))
+
 
 
 @app.route("/improve", methods=["POST"])
