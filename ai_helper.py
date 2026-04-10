@@ -3,10 +3,11 @@ import time
 import requests
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL_NAME = "gemini-1.5-flash"
 
 
 def call_gemini(prompt):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_NAME}:generateContent?key={GEMINI_API_KEY}"
 
     payload = {
         "contents": [
@@ -28,7 +29,7 @@ def call_gemini(prompt):
             response.raise_for_status()
             data = response.json()
 
-            print("Gemini success response:")
+            print("Gemini success response:", flush=True)
             print(data, flush=True)
 
             candidates = data.get("candidates", [])
@@ -48,10 +49,10 @@ def call_gemini(prompt):
 
         except requests.exceptions.HTTPError:
             try:
-                print("Gemini API error response:")
+                print("Gemini API error response:", flush=True)
                 print(response.text, flush=True)
             except Exception:
-                print("Could not read Gemini error response.")
+                print("Could not read Gemini error response.", flush=True)
 
             if response.status_code == 503 and attempt < max_retries - 1:
                 time.sleep(delay)
@@ -61,11 +62,11 @@ def call_gemini(prompt):
             return "AI service is currently unavailable or misconfigured. Please try again later."
 
         except requests.exceptions.RequestException as e:
-            print("Gemini request failed:", str(e))
+            print("Gemini request failed:", str(e), flush=True)
             return "AI service is currently unavailable. Please try again later."
 
         except Exception as e:
-            print("Unexpected Gemini parsing error:", str(e))
+            print("Unexpected Gemini parsing error:", str(e), flush=True)
             return "AI service returned an unexpected response. Please try again later."
 
 
