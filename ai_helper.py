@@ -3,7 +3,7 @@ import time
 import requests
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-1.5-flash"
+MODEL_NAME = "gemini-1.5-flash-latest"
 
 
 def call_gemini(prompt):
